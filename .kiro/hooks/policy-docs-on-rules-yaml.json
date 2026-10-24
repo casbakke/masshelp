@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Regenerate policy docs from rules YAML",
+      "trigger": "PostFileSave",
+      "description": "Validates the rules YAML, regenerates .kiro/steering/policy.md (the system prompt injects the same text at startup), and reruns rules tests.",
+      "matcher": "masshelp/rules/masshealth_rules\\.yaml$",
+      "action": {
+        "type": "command",
+        "command": "uv run scripts/gen_policy_docs.py && uv run pytest -q tests/test_rules_engine.py tests/test_rules_properties.py",
+        "timeout": 120
+      }
+    }
+  ]
+}

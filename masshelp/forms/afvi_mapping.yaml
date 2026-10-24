@@ -1,0 +1,41 @@
+# Maps MassHelp values to AcroForm field names in assets/AFVI_2025-10.pdf
+# (MassHealth / Health Connector "Attestation Form to Verify Income").
+# Field rectangles are read from the PDF at runtime, so only names live here.
+# Checked with pypdf.PdfReader(...).get_fields(): 28 fields, 2 pages.
+
+form_id: AFVI_2025-10
+title: Attestation Form to Verify Income
+template: assets/AFVI_2025-10.pdf
+
+text_fields:
+  head_of_household_name: "Head of Household Name"
+  other_household_members: "Other Household Members"
+  member_id: "Reference IDMember ID"
+  phone: "Phone Number"
+  todays_date: "Todays Date"
+  expected_annual_income: "What is your total expected income for the current calendar year as stated on your application"
+  other_income_source: "Proof Other Income from other source: Other"
+  signature_date: "Date"
+
+multiline_fields:
+  income_detail: "Income Detail"
+  explanation: "Explanation of Income"
+
+checkboxes:
+  # "Select one option below. I am completing this form because:"
+  reason_cannot_access: "1 I cannot access documentation to prove my income Examples The document is being withheld or you will not have documentation"
+  reason_does_not_exist: "2 Documentation to prove my income does not exist"
+  # Income types (only the ones MassHelp collects are used today)
+  job_income: "Proof of Job Income including employer"
+  self_employment_income: "Proof of Self Employment Income"
+  farming_or_fishing_income: "Proof of Farming or Fishing Income"
+  other_income: "Proof of Other Income from other source"
+
+# Where the consent stamp goes: the "Head of household signature ____" line on page 2.
+signature_line:
+  page: 2
+  x: 166
+  y: 378
+  width: 224
+
+# Interactive buttons (Print, Clear) and all widgets are removed from the output.

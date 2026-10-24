@@ -1,0 +1,44 @@
+[project]
+name = "masshelp"
+version = "0.1.0"
+description = "Headless SMS and voice assistant that helps MassHealth members prove they meet the work rule."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic",
+    "fastapi",
+    "httpx",
+    "pillow",
+    "pydantic-settings",
+    "pypdf",
+    "python-multipart",
+    "pyyaml",
+    "reportlab",
+    "sqlmodel",
+    "twilio",
+    "uvicorn[standard]",
+]
+
+[dependency-groups]
+dev = [
+    "hypothesis",
+    "pytest",
+    "pytest-asyncio",
+    "respx",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["masshelp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "live: runs against the real Claude API (needs ANTHROPIC_API_KEY); deselected by default",
+]
+addopts = "-m 'not live'"

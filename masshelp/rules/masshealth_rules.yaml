@@ -1,0 +1,247 @@
+# MassHealth work and community engagement rule: every policy number lives here.
+# Source: H.R. 1 (One Big Beautiful Bill Act, July 2025). Massachusetts has not published
+# final implementation details, so treat everything here as a draft that will change.
+# After editing, run: uv run scripts/gen_policy_docs.py  (a Kiro hook does this on save)
+
+version: "2026-10-24-draft"
+source: "H.R. 1 (July 2025), Medicaid community engagement requirement"
+effective_date: 2027-01-01
+program: CarePlus
+
+age_min: 19
+age_max: 64
+# Age is checked on the first day of the month being verified. [DEFAULT]
+age_reference: first_day_of_month
+
+federal_minimum_wage: 7.25
+hours_threshold: 80
+# Must equal hours_threshold x federal_minimum_wage (checked at load).
+income_threshold: 580
+weeks_per_month: 4.33
+seasonal_lookback_months: 6
+# Document amounts that differ from what the member said by more than this are asked about (R22).
+mismatch_tolerance: 0.10
+
+renewal_months: 6
+retro_coverage_months_before: 3
+retro_coverage_months_after: 1
+
+contacts:
+  masshealth_customer_service: "1-800-841-2900"
+  health_connector: "1-877-623-6765"
+  health_connector_url: "mahealthconnector.org"
+
+notes:
+  combination_path: "Combination path (income converted to hours plus volunteer or training hours). Confirm with MassHealth guidance."
+  gross_used_for_self_employment: "Self-employed or gig member did not know business expenses, so gross earnings were used."
+  state_option_undecided: "This is a state option. Massachusetts has not decided if it applies."
+
+# Exemptions are screened FIRST (R15). priority 1 = always ask; priority 2 = ask in one
+# short combined question, or when the conversation suggests it. [DEFAULT]
+exemptions:
+  - id: caretaker_child_13_or_younger
+    label: "Parent or caretaker of a child 13 or younger"
+    priority: 1
+    screening:
+      en: "Do you take care of a child age 13 or younger?"
+      es: "¿Usted cuida a un niño de 13 años o menos?"
+    proof: [child_birth_certificate_or_school_record]
+  - id: caretaker_disabled_person
+    label: "Caretaker of a person with a disability"
+    priority: 1
+    screening:
+      en: "Do you take care of someone with a disability?"
+      es: "¿Usted cuida a alguien con una discapacidad?"
+    proof: [doctor_note]
+  - id: pregnant_or_postpartum
+    label: "Pregnant or postpartum"
+    priority: 1
+    screening:
+      en: "Are you pregnant, or did you have a baby recently?"
+      es: "¿Está embarazada o tuvo un bebé hace poco?"
+    proof: [doctor_note]
+  - id: medically_frail
+    label: "Medically frail (blind, disabled, serious or complex medical condition, disabling mental disorder, or substance use disorder)"
+    priority: 1
+    screening:
+      en: "Do you have a health condition or disability that makes daily life hard?"
+      es: "¿Tiene una condición de salud o discapacidad que le dificulta la vida diaria?"
+    proof: [doctor_note]
+  - id: sud_treatment
+    label: "In a substance use disorder treatment program"
+    priority: 1
+    screening:
+      en: "Are you in a treatment program for alcohol or drug use?"
+      es: "¿Está en un programa de tratamiento para el alcohol o las drogas?"
+    proof: [treatment_program_letter]
+  - id: meets_snap_tafdc_work_rules
+    label: "Already meeting SNAP or TAFDC work requirements"
+    priority: 1
+    screening:
+      en: "Do you get SNAP or TAFDC and meet their work rules?"
+      es: "¿Recibe SNAP o TAFDC y cumple con sus reglas de trabajo?"
+    proof: [snap_tafdc_notice]
+  - id: incarcerated_or_recently_released
+    label: "Incarcerated, or released within the last 90 days"
+    priority: 2
+    screening:
+      en: "Were you released from jail or prison in the last 90 days?"
+      es: "¿Salió de la cárcel o prisión en los últimos 90 días?"
+    proof: [release_papers]
+  - id: american_indian_alaska_native
+    label: "American Indian or Alaska Native"
+    priority: 2
+    screening:
+      en: "Are you American Indian or Alaska Native?"
+      es: "¿Es usted indígena americano o nativo de Alaska?"
+    proof: [tribal_document]
+  - id: veteran_total_disability
+    label: "Veteran with a total disability rating"
+    priority: 2
+    screening:
+      en: "Are you a veteran with a total disability rating?"
+      es: "¿Es usted veterano con una calificación de discapacidad total?"
+    proof: [va_rating_letter]
+  - id: former_foster_youth_under_26
+    label: "Former foster youth under 26"
+    priority: 2
+    screening:
+      en: "Were you in foster care as a teen, and are you under 26?"
+      es: "¿Estuvo en cuidado de crianza de adolescente y tiene menos de 26 años?"
+    proof: [foster_care_record]
+  - id: short_term_hardship
+    label: "Short-term hardship (inpatient hospital stay, disaster area, or high-unemployment area)"
+    priority: 2
+    state_option: true
+    screening:
+      en: "Were you in the hospital overnight, or hit by a disaster, this month?"
+      es: "¿Estuvo hospitalizado o le afectó un desastre este mes?"
+    proof: [hospital_record]
+
+# What proof each path needs (ids refer to proof_types below).
+path_proof:
+  income_employee: [pay_stub, employer_letter]
+  income_self_employed: [gig_earnings_screenshot, bank_statement, form_1099, self_employment_ledger]
+  seasonal_income: [pay_stub, gig_earnings_screenshot, bank_statement]
+  school: [school_enrollment_letter]
+  work_hours_employee: [pay_stub, employer_letter]
+  work_hours_self_employed: [gig_earnings_screenshot, self_employment_ledger]
+  volunteer_hours: [volunteer_letter]
+  training_hours: [training_letter]
+
+# Accepted proof (R25 alternatives come from here). Instructions are texted to the member.
+proof_types:
+  pay_stub:
+    label: "Two recent pay stubs"
+    instructions:
+      en: "Please text a photo of your 2 most recent pay stubs. Photos are fine. Lay each one flat in good light, with the whole page in the photo."
+      es: "Por favor envíe una foto de sus 2 talones de pago más recientes. Las fotos están bien. Póngalos sobre una superficie plana con buena luz, con toda la página en la foto."
+    alternatives: [employer_letter, bank_statement, attestation]
+  employer_letter:
+    label: "Letter from your employer"
+    instructions:
+      en: "Please text a photo of a letter from your employer that shows your hours or pay for the month."
+      es: "Por favor envíe una foto de una carta de su empleador que muestre sus horas o su pago del mes."
+    alternatives: [pay_stub, bank_statement, attestation]
+  gig_earnings_screenshot:
+    label: "Earnings summary screenshot from the app for the month"
+    instructions:
+      en: "Please text a screenshot of your earnings for last month from your driver or delivery app. It should show the dates and the total."
+      es: "Por favor envíe una captura de pantalla de sus ganancias del mes pasado de su aplicación. Debe mostrar las fechas y el total."
+    alternatives: [bank_statement, form_1099, self_employment_ledger, attestation]
+  bank_statement:
+    label: "Bank statement showing deposits"
+    instructions:
+      en: "Please text a photo or screenshot of your bank statement that shows your pay deposits. You can cover your account number."
+      es: "Por favor envíe una foto o captura de su estado de cuenta que muestre los depósitos de su pago. Puede tapar su número de cuenta."
+    alternatives: [attestation]
+  form_1099:
+    label: "1099 tax form"
+    instructions:
+      en: "Please text a photo of your 1099 form. You can cover any Social Security number on it."
+      es: "Por favor envíe una foto de su formulario 1099. Puede tapar el número de Seguro Social."
+    alternatives: [bank_statement, self_employment_ledger, attestation]
+  self_employment_ledger:
+    label: "Self-employment log of income and expenses, with a signed statement"
+    instructions:
+      en: "Please text a photo of your own list of what you earned and spent last month."
+      es: "Por favor envíe una foto de su propia lista de lo que ganó y gastó el mes pasado."
+    alternatives: [attestation]
+  volunteer_letter:
+    label: "Letter or log from the organization with hours and a contact"
+    instructions:
+      en: "Please text a photo of a letter or log from where you volunteer. It should show your hours and a contact person."
+      es: "Por favor envíe una foto de una carta o registro de donde hace voluntariado. Debe mostrar sus horas y una persona de contacto."
+    alternatives: [attestation]
+  training_letter:
+    label: "Enrollment or attendance letter from the job training program"
+    instructions:
+      en: "Please text a photo of a letter from your job training program that shows you are enrolled or attending."
+      es: "Por favor envíe una foto de una carta de su programa de capacitación que muestre que está inscrito o asistiendo."
+    alternatives: [attestation]
+  school_enrollment_letter:
+    label: "Enrollment letter showing half-time or more"
+    instructions:
+      en: "Please text a photo of a letter or screenshot from your school that shows you are enrolled at least half-time."
+      es: "Por favor envíe una foto de una carta o captura de su escuela que muestre que está inscrito al menos medio tiempo."
+    alternatives: [attestation]
+  child_birth_certificate_or_school_record:
+    label: "Child's birth certificate or school record"
+    instructions:
+      en: "Please text a photo of your child's birth certificate or a school record that shows their age."
+      es: "Por favor envíe una foto del acta de nacimiento de su hijo o un registro escolar que muestre su edad."
+    alternatives: [attestation]
+  doctor_note:
+    label: "Note from a doctor or provider"
+    instructions:
+      en: "Please text a photo of a note from your doctor or clinic."
+      es: "Por favor envíe una foto de una nota de su médico o clínica."
+    alternatives: [attestation]
+  treatment_program_letter:
+    label: "Letter from the treatment program"
+    instructions:
+      en: "Please text a photo of a letter from your treatment program."
+      es: "Por favor envíe una foto de una carta de su programa de tratamiento."
+    alternatives: [attestation]
+  snap_tafdc_notice:
+    label: "SNAP or TAFDC notice"
+    instructions:
+      en: "Please text a photo of your SNAP or TAFDC notice."
+      es: "Por favor envíe una foto de su aviso de SNAP o TAFDC."
+    alternatives: [attestation]
+  release_papers:
+    label: "Release papers"
+    instructions:
+      en: "Please text a photo of your release papers."
+      es: "Por favor envíe una foto de sus papeles de salida."
+    alternatives: [attestation]
+  tribal_document:
+    label: "Tribal enrollment or IHS document"
+    instructions:
+      en: "Please text a photo of your tribal enrollment card or Indian Health Service document."
+      es: "Por favor envíe una foto de su tarjeta tribal o documento del Servicio de Salud Indígena."
+    alternatives: [attestation]
+  va_rating_letter:
+    label: "VA disability rating letter"
+    instructions:
+      en: "Please text a photo of your VA disability rating letter."
+      es: "Por favor envíe una foto de su carta de calificación de discapacidad del VA."
+    alternatives: [attestation]
+  foster_care_record:
+    label: "Foster care record"
+    instructions:
+      en: "Please text a photo of a record that shows you were in foster care."
+      es: "Por favor envíe una foto de un registro que muestre que estuvo en cuidado de crianza."
+    alternatives: [attestation]
+  hospital_record:
+    label: "Hospital discharge paper"
+    instructions:
+      en: "Please text a photo of your hospital discharge paper."
+      es: "Por favor envíe una foto de su papel de alta del hospital."
+    alternatives: [attestation]
+  attestation:
+    label: "Signed statement from the member (attestation)"
+    instructions:
+      en: "If you don't have papers, you can sign a statement that what you told me is true. I will add it to your form."
+      es: "Si no tiene papeles, puede firmar una declaración de que lo que me dijo es verdad. La agregaré a su formulario."
+    alternatives: []

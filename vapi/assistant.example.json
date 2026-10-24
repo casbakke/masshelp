@@ -1,0 +1,23 @@
+{
+  "_comment": "Example Vapi assistant config. [VERIFY] field names against current Vapi docs before pasting. Set the model URL to your ngrok host + /vapi; Vapi appends /chat/completions.",
+  "name": "MassHelp",
+  "firstMessage": "Hi, this is MassHelp, a free automated assistant. I'm not MassHealth. I can help you answer MassHealth's work rule letter. Para español, diga español.",
+  "firstMessageMode": "assistant-speaks-first",
+  "model": {
+    "provider": "custom-llm",
+    "url": "https://YOUR-NGROK-HOST/vapi",
+    "model": "masshelp"
+  },
+  "transcriber": {
+    "provider": "deepgram",
+    "model": "nova-3",
+    "language": "multi"
+  },
+  "voice": {
+    "provider": "11labs",
+    "model": "eleven_multilingual_v2",
+    "voiceId": "YOUR-VOICE-ID"
+  },
+  "endCallPhrases": ["Goodbye from MassHelp", "Adiós de parte de MassHelp"],
+  "recordingEnabled": false
+}

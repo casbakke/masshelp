@@ -1,0 +1,98 @@
+# Dummy demo members. No real people, no real data.
+# Phone numbers come from DEMO_PHONE_* env vars (see .env.example) so the team's
+# real phones can stand in during the live demo.
+
+members:
+  # Demo 9.1: voice, gig worker without pay stubs
+  - id: mem_maria
+    masshealth_id: MH-DEMO-000123
+    first_name: Maria
+    last_name: Santos
+    dob: 1992-06-04
+    phone_setting: demo_phone_maria
+    phone_default: "+16175550101"
+    preferred_language: en
+    program: CarePlus
+    seed_facts:
+      note: "Drives for a food delivery app (RouteRunner in seed data), about 25 hours a week."
+    open_request:
+      type: work_requirement_verification
+      month: "2026-11"
+      deadline: 2026-12-31
+
+  # Demo 9.2: SMS, Spanish, paper paystubs
+  - id: mem_carlos
+    masshealth_id: MH-DEMO-000456
+    first_name: Carlos
+    last_name: Rivera
+    dob: 1985-03-17
+    phone_setting: demo_phone_carlos
+    phone_default: "+16175550102"
+    preferred_language: es
+    program: CarePlus
+    seed_facts:
+      note: "Full-time employee at Green Valley Landscaping LLC (fictional)."
+    open_request:
+      type: work_requirement_verification
+      month: "2026-11"
+      deadline: 2026-12-31
+
+  # 9.3 branch: parent of a 10-year-old (exemption path)
+  - id: mem_ana
+    masshealth_id: MH-DEMO-000789
+    first_name: Ana
+    last_name: Lopez
+    dob: 1990-09-12
+    phone_setting: demo_phone_ana
+    phone_default: "+16175550103"
+    preferred_language: en
+    program: CarePlus
+    open_request:
+      type: work_requirement_verification
+      month: "2026-11"
+      deadline: 2026-12-31
+
+  # 9.3 branch: half-time student (school path)
+  - id: mem_jamal
+    masshealth_id: MH-DEMO-000321
+    first_name: Jamal
+    last_name: Brown
+    dob: 2003-01-25
+    phone_setting: demo_phone_jamal
+    phone_default: "+16175550104"
+    preferred_language: en
+    program: CarePlus
+    open_request:
+      type: work_requirement_verification
+      month: "2026-11"
+      deadline: 2026-12-31
+
+  # 9.3 branch: $300 income plus 50 volunteer hours (combination path)
+  - id: mem_linh
+    masshealth_id: MH-DEMO-000654
+    first_name: Linh
+    last_name: Nguyen
+    dob: 1978-11-02
+    phone_setting: demo_phone_linh
+    phone_default: "+16175550105"
+    preferred_language: en
+    program: CarePlus
+    open_request:
+      type: work_requirement_verification
+      month: "2026-11"
+      deadline: 2026-12-31
+
+  # 9.3 branch: lost job, no hours (honest "likely does not meet")
+  - id: mem_david
+    masshealth_id: MH-DEMO-000987
+    first_name: David
+    last_name: Miller
+    dob: 1988-04-30
+    phone_setting: demo_phone_david
+    phone_default: "+16175550106"
+    preferred_language: en
+    program: CarePlus
+    open_request:
+      type: work_requirement_verification
+      month: "2026-11"
+      deadline: 2026-12-31

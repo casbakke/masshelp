@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Run rules tests on save",
+      "trigger": "PostFileSave",
+      "description": "Runs rules engine unit and property-based tests when rules code changes.",
+      "matcher": "masshelp/rules/.*\\.py$",
+      "action": {
+        "type": "command",
+        "command": "uv run pytest -q tests/test_rules_engine.py tests/test_rules_properties.py",
+        "timeout": 120
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.hypothesis/
+*.egg-info/
+dist/
+build/
+
+# Runtime data (SQLite db, received media, generated PDFs)
+data/
+*.db
+
+# Secrets
+.env
+
+# OS / editor
+.DS_Store
+
+# NOTE: .kiro/ must stay committed. Never add it here.
