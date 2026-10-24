@@ -383,7 +383,9 @@ async def request_document(ctx: ToolContext, s: Session, case: Case, inp: dict) 
                                    limit=ctx.services.settings.sms_split_chars, kind="document_request")
         return {"sms_sent": sent, "instructions_texted": instructions, "alternatives": alternatives,
                 "say": "Tell the member you just texted them what to send." if sent else
-                       "The text could not be sent. Tell them what to send in one sentence."}
+                       "Texting is not available. Don't say you texted. In one sentence, say what proof works. "
+                       "Then offer to send the form now with a signed statement instead "
+                       "(record attestation_accepted=true if they agree)."}
     return {"sms_sent": False, "instructions": instructions, "alternatives": alternatives,
             "say": "You are texting already: put these instructions in your reply (in the member's language)."}
 
@@ -514,7 +516,11 @@ async def send_confirmation_sms(ctx: ToolContext, s: Session, case: Case, inp: d
     media = [link] if services.settings.twilio_send_pdf_media else None
     sent = await send_case_sms(services.messenger, s, case, body, media_urls=media,
                                limit=services.settings.sms_split_chars, kind="confirmation")
-    return {"sent": sent, "link": link}
+    out = {"sent": sent, "link": link}
+    if not sent:
+        out["say"] = ("Texting is not available. Don't say you texted. Read the receipt number aloud slowly, "
+                      "one character at a time, and say MassHealth makes the final decision.")
+    return out
 
 
 async def set_language(ctx: ToolContext, s: Session, case: Case, inp: dict) -> dict:

@@ -45,14 +45,20 @@ class UserInput:
     media: list[IncomingMedia] = field(default_factory=list)
 
 
-def load_system_prompt(rules) -> str:
-    return PROMPT_PATH.read_text(encoding="utf-8").replace("{{POLICY}}", policy_markdown(rules))
+DEMO_SCRIPT_PATH = Path(__file__).with_name("prompts") / "demo_script.md"
+
+
+def load_system_prompt(rules, demo_script: bool = False) -> str:
+    prompt = PROMPT_PATH.read_text(encoding="utf-8").replace("{{POLICY}}", policy_markdown(rules))
+    if demo_script:
+        prompt += "\n\n" + DEMO_SCRIPT_PATH.read_text(encoding="utf-8")
+    return prompt
 
 
 class AgentRunner:
     def __init__(self, services):
         self.services = services
-        self.system_prompt = load_system_prompt(services.rules)
+        self.system_prompt = load_system_prompt(services.rules, services.settings.demo_script)
         self.tools = tool_definitions(services.rules)
 
     # ------------------------------------------------------------ public

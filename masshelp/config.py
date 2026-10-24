@@ -57,6 +57,8 @@ class Settings(BaseSettings):
     # Demo controls
     demo_today: date | None = None
     demo_fixed_pdf: Path | None = None
+    # Appends agent/prompts/demo_script.md to the system prompt (2-minute voice demo)
+    demo_script: bool = False
     demo_phone_maria: str = "+16175550101"
     demo_phone_carlos: str = "+16175550102"
     demo_phone_ana: str = "+16175550103"

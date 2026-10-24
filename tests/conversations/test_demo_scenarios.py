@@ -236,3 +236,4 @@ def _api_error():
     from masshelp.agent.llm import LLMError
 
     return LLMError("simulated outage")
+

@@ -43,7 +43,10 @@ class TwilioMessenger:
 
 
 class ConsoleMessenger:
-    """Prints outbound texts. Used by scripts/chat_cli.py and when Twilio isn't configured."""
+    """Prints outbound texts. Used by scripts/chat_cli.py and when Twilio isn't configured.
+    Nothing reaches the member, so sends report as not delivered."""
+
+    delivers = False
 
     async def send_sms(self, to: str, body: str, media_urls: list[str] | None = None) -> str | None:
         media = f"\n   [media: {', '.join(media_urls)}]" if media_urls else ""
@@ -145,7 +148,9 @@ async def send_case_sms(
         log.exception("SMS send failed")
         log_event(session, case.id, "sms_error", {"kind": kind, "error": str(exc)[:300]})
         return False
+    delivered = getattr(messenger, "delivers", True)
     case.last_sms_out_at = utcnow()
     session.add(case)
-    log_event(session, case.id, "sms_sent", {"kind": kind, "parts": len(parts), "text": redact(body)[:1000]})
-    return True
+    log_event(session, case.id, "sms_sent" if delivered else "sms_console_only",
+              {"kind": kind, "parts": len(parts), "text": redact(body)[:1000]})
+    return delivered
