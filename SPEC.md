@@ -271,6 +271,7 @@ class AgentRunner:
 - The tool loop runs at most 6 tool rounds per user turn, then stops with a safe message.
 - Channel-specific style comes from the per-turn context: voice means very short, no lists, no URLs, spell out numbers and dates; SMS means short paragraphs and numbered lists are fine.
 - `DEMO_TODAY` env var overrides "today" (for example `2026-12-01`) so the demo date story is consistent.
+- `DEMO_MODE=true` appends the script and the "Agent rules in demo mode" from `DEMO_SCRIPT.md` to the system prompt (after the cache breakpoint is fine, since it's static per run, so it can also go before it). The agent then says the scripted lines word for word while still calling the real tools. See `DEMO_SCRIPT.md`.
 
 ### 5.5 Tools exposed to Claude
 
@@ -283,7 +284,7 @@ All tools are plain Python functions with JSON schemas (`strict: true`, `additio
 | `record_answers` | list of `{field, value, source_message_id?}` | Updated answers | `field` is an enum (see 6.3) |
 | `evaluate_requirement` | optional `month` (YYYY-MM) | `{status, path, reasons[], missing[], proof_needed[]}` | Calls the rules engine; the only source of outcomes (R19) |
 | `request_document` | `doc_type` | `{sms_sent: bool, instructions}` | On voice, texts the member what to send (R24) |
-| `get_documents` | none | Extracted data for each received document, with mismatch flags | |
+| `get_documents` | none | Extracted data for each received document, with mismatch flags | If a document is still being extracted, waits up to 8 seconds for it |
 | `prepare_form` | none | `{pdf_id, fields: {label: value}}` | Builds the PDF; respects `DEMO_FIXED_PDF`. Returns fields for read-back |
 | `record_consent` | `consent_text`, `member_reply` | `{consent_id}` | Required before submit (R28) |
 | `submit_to_masshealth` | `pdf_id`, `consent_id` | `{receipt_number, submitted_at}` | Mock. Rejects without a valid consent |
@@ -376,6 +377,7 @@ Include 2 short example exchanges (one voice, one SMS) in the system prompt: the
 | `DATABASE_URL` | Default `sqlite:///masshelp.db` |
 | `DEMO_TODAY` | Optional date override |
 | `DEMO_FIXED_PDF` | Optional path; forces the form output |
+| `DEMO_MODE` | `true` makes the agent follow `DEMO_SCRIPT.md` |
 | `DEMO_PHONE_*` | Seed phone numbers for demo members |
 
 Provide `.env.example`. Never commit real secrets.
@@ -438,6 +440,8 @@ Seed data must make both of these run exactly as written. `DEMO_TODAY=2026-12-01
 
 ### 9.1 Maria, voice, gig worker without pay stubs
 
+The exact timed version of this scenario, used for the live demo, is in `DEMO_SCRIPT.md`. If the two differ, `DEMO_SCRIPT.md` wins.
+
 Seed: Maria Santos, DOB 1992-06-04, MassHealth ID `MH-DEMO-000123`, preferred language English, CarePlus, open request "work requirement verification", deadline 2026-12-31.
 
 1. Maria calls. Agent greets, discloses it's automated and not MassHealth.
@@ -447,7 +451,7 @@ Seed: Maria Santos, DOB 1992-06-04, MassHealth ID `MH-DEMO-000123`, preferred la
 5. Income: she drives for a delivery app, about 25 hours a week, about $1,150 before gas, about $900 after. Engine: `LIKELY_MEETS` by income ($900 ≥ $580). Hours path also met (25 × 4.33 = 108).
 6. She has no pay stubs. Agent says that's fine and texts her what to send: a screenshot of her monthly earnings in the app.
 7. Agent prepares the form, reads it back, asks for consent to submit for her. She says yes.
-8. **[DEFAULT]** Submission waits until the screenshot arrives, or she can choose to submit now with an attestation. For the demo: she sends the screenshot by text while still on the call or right after, the agent confirms it was received and the amount matches, then submits.
+8. Submission waits until the screenshot arrives (or, outside the demo, she can choose to submit now with an attestation). In the demo she texts the screenshot during the call, the agent confirms the amount matches ($904.12 net for November 2026), then submits.
 9. She gets an SMS confirmation with the receipt number and PDF.
 
 ### 9.2 Carlos, SMS, Spanish, paper paystubs
@@ -463,7 +467,7 @@ Seed: Carlos (last name of your choice), Spanish preferred, full-time landscapin
 7. Agent prepares the form (in English), summarizes it in Spanish, asks for consent, he replies "Sí".
 8. Submitted, confirmation text in Spanish with receipt and PDF.
 
-Include 2 sample paystub images and 1 sample earnings screenshot in `seed/sample_docs/` (synthetic, clearly fake, no real brand logos) for testing and the demo.
+Include 2 sample paystub images and 1 sample earnings screenshot (`seed/sample_docs/earnings_november.png`, net $904.12 for November 2026) in `seed/sample_docs/` (synthetic, clearly fake, no real brand logos) for testing and the demo.
 
 ### 9.3 Extra branches to cover in tests (not in the video)
 
@@ -531,7 +535,7 @@ Ordered so something demoable exists as early as possible. Each task lists the r
 10. **Cross-channel continuity**: call then SMS photo on the same case (G3, R24).
 11. **Redaction and safety tests** (R9, R37, R33).
 12. **Latency pass**: measure time to first token, tune prompt length, caching, `max_tokens`, filler lines.
-13. **Demo hardening**: `DEMO_TODAY`, `DEMO_FIXED_PDF`, reset script (`scripts/reset_demo.py`), sample docs.
+13. **Demo hardening**: `DEMO_TODAY`, `DEMO_FIXED_PDF`, `DEMO_MODE` with `DEMO_SCRIPT.md`, reset script (`scripts/reset_demo.py`), sample docs. Rehearse the script and time it; it must finish under 2:00.
 14. **README + Kiro write-up** for submission.
 
 Stretch (only after 1 to 14): Dockerfile and a cloud deploy; Haitian Creole and Portuguese testing; reminder texts for members who opted in during a conversation; a read-only case viewer page for judges.
@@ -545,5 +549,4 @@ Stretch (only after 1 to 14): Dockerfile and a cloud deploy; Haitian Creole and 
 - **Vapi payload details** (5.3) are marked **[VERIFY]**. Build a tiny echo endpoint first and log a real request before writing the adapter.
 - **Voice latency.** Tool rounds add delay. Mitigate with filler lines, Haiku, low effort, short prompts, and caching. If a turn regularly exceeds 2 seconds, move `record_answers` to a background write and keep `evaluate_requirement` fast (it's pure Python).
 - **Policy uncertainty.** MA hasn't finalized rules. Everything policy-specific is in `masshealth_rules.yaml` and agent language always says "likely".
-- **Submission timing in 9.1.** The default is to wait for proof before submitting; confirm with the team.
 - **Form choice** (5.8) is a default pending a look at the JU-1 PDF.
