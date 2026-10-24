@@ -2,7 +2,7 @@
 
 > No one who meets the rule should lose their health insurance over paperwork.
 
-## The short version
+## Tldr
 
 Starting January 1, 2027, many MassHealth members aged 19 to 64 in the expansion group will have to prove, month after month, that they work, volunteer, train, study, or qualify for an exemption. They will also have to renew every six months instead of once a year.
 
@@ -10,7 +10,7 @@ Most of the people this affects already meet the rule. The danger is not that th
 
 MassHelp exists to close that gap. We help eligible people prove what is already true, on time, in a form MassHealth will accept, so they keep their coverage.
 
-## The problem
+## Problem
 
 In July 2025, Congress passed H.R. 1, the One Big Beautiful Bill Act (OB3). Massachusetts must put its Medicaid changes into effect for MassHealth, which covers about 1.87 million residents.
 
@@ -29,7 +29,7 @@ The state itself estimates that about 175,000 people could lose coverage. Histor
 - **Medicaid unwinding, 2023 to 2024.** Of the 25 million people dropped nationwide, 69% were cut for missing paperwork, not for being ineligible.
 - **No employment gain.** Harvard researchers found no increase in work in Arkansas. The only measurable result was more uninsured people.
 
-The weak spot is the paperwork step. That is where MassHelp works.
+Masshelp aims to address the weak spot in the paperwork step.
 
 ## Who is most at risk
 
@@ -64,12 +64,6 @@ Losing coverage is costly for everyone involved:
 - **For providers.** Hospitals and clinics absorb unpaid bills.
 - **For the state.** MassHealth processes the same people again when they reapply, paying twice for an outcome no one wanted.
 
-## Where we stand
-
-People disagree about whether Medicaid should require work, and courts may weigh in too. MassHelp does not take a side on that question.
-
-Whatever you think of the rule, people who meet it should not lose their health insurance over a missed letter or a missing pay stub. Supporters and opponents of the policy can both agree on that. MassHelp is aimed at exactly that gap.
-
 ## What MassHelp does
 
 MassHelp is a guide that walks a MassHealth member from "I got a letter" (or "I didn't know about any of this") to "my coverage is safe."
@@ -84,9 +78,9 @@ MassHelp is a guide that walks a MassHealth member from "I got a letter" (or "I 
 
 ## Principles
 
-- **Assume the person qualifies.** Most of them do. Our job is to help them show it, not to screen them out.
+- **Assume the person qualifies.**
 - **Plain language first.** Every message should make sense to someone reading it on a phone, in a hurry, in their second language.
-- **Meet people where they are.** Mobile-first and text-friendly, with low-bandwidth and offline-friendly options. No app download required. Multilingual from day one.
+- **Meet people where they are.** Mobile-first and text-friendly, with low-bandwidth and offline-friendly options. No app download required. Multilingual supported, English prioritized for the demo.
 - **Accessible by default.** Usable with screen readers, large text, and simple navigation for people with disabilities.
 - **Privacy is non-negotiable.** Health, income, and immigration-adjacent information is sensitive. Collect the minimum, explain why, keep it secure, and never sell or share it without consent.
 - **Neutral and accurate.** Information must match current MassHealth rules and be updated as guidance changes. When we are unsure, we say so and point to an official source or a human.
