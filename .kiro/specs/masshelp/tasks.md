@@ -1,0 +1,35 @@
+# Implementation Plan
+
+- [x] 1. Scaffold: `pyproject.toml` (uv), FastAPI app with `/health`, settings, SQLite models, seed script, `.env.example`, steering docs
+  - _Requirements: SPEC 5.1, 7, 8_
+- [x] 2. Rules engine, rules YAML, unit tests, Hypothesis property tests
+  - _Requirements: R15, R16, R17, R19, R20, T1-T5_
+- [x] 3. Mock MassHealth service and seed members (Maria, Carlos, plus 9.3 branch members)
+  - _Requirements: SPEC 5.7, D1_
+- [x] 4. Agent runner, 12 tools, system prompt with generated policy section, `scripts/chat_cli.py`
+  - _Requirements: R5-R20, R32-R36_
+- [x] 5. AFVI form: field mapping, fill + flatten, SAMPLE watermark on every page, `DEMO_FIXED_PDF`, `/files/{token}` with 7-day expiry
+  - _Requirements: R12, R26, R30, R31_
+- [x] 6. Read-back, consent (clear yes checked in code), mock submit, confirmation SMS
+  - _Requirements: R27, R28, R29_
+- [x] 7. Twilio SMS adapter: signature check, immediate empty TwiML, background turn, STOP/START, 600-char split, per-number lock
+  - _Requirements: R1, R3, R4_
+- [x] 8. Document extraction (vision, JSON schema), monthly scaling, mismatch check, document-sourced answers
+  - _Requirements: R21-R25_
+- [x] 9. Vapi custom LLM adapter: OpenAI-style SSE, filler before slow tools, auth, greeting in transcript, example assistant config
+  - _Requirements: R2, R13_
+- [x] 10. Cross-channel continuity: same case for call and SMS, request_document texts during a call
+  - _Requirements: G3, R24_
+- [x] 11. Redaction and safety tests (SSN, card, account numbers; scam script in prompt; lockout)
+  - _Requirements: R8, R9, R33, R37, T6_
+- [ ] 12. Live verification with real services
+  - [ ] 12.1 Run demo 9.1 and 9.2 in `chat_cli.py` against the real Claude API; tune prompt
+  - [ ] 12.2 Log a real Vapi request; confirm `call.id` and `call.customer.number` [VERIFY]
+  - [ ] 12.3 Confirm Twilio can text the team's phones (10DLC / trial) [VERIFY]
+  - [ ] 12.4 Measure voice TTFT with `scripts/latency_report.py`; target p50 under 1.5 s
+  - _Requirements: R1, R2, D1_
+- [x] 13. Demo hardening: `DEMO_TODAY`, `DEMO_FIXED_PDF`, `scripts/reset_demo.py`, synthetic sample docs
+  - _Requirements: G6, D17_
+- [x] 14. README and Kiro write-up notes
+- [ ] 15. Optional live test suite (`-m live`) for the two demo scenarios
+  - _Requirements: T10_

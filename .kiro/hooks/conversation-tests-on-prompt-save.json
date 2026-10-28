@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Run conversation tests on prompt change",
+      "trigger": "PostFileSave",
+      "description": "Runs the scripted fake-LLM demo conversations when the prompt, tools, runner, or templates change.",
+      "matcher": "masshelp/(agent/prompts/.*|agent/tools\\.py|agent/runner\\.py|i18n\\.py)$",
+      "action": {
+        "type": "command",
+        "command": "uv run pytest -q tests/conversations",
+        "timeout": 120
+      }
+    }
+  ]
+}
